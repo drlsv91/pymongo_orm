@@ -5,8 +5,8 @@ Synchronous MongoDB ORM example.
 import logging
 from datetime import datetime, timezone
 import pymongo
-from mongomodel import SyncMongoConnection
-from mongomodel import setup_logging
+from pymongo_orm import SyncMongoConnection
+from pymongo_orm import setup_logging
 from .models.user import SyncUser
 
 

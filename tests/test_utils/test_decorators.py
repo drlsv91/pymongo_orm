@@ -9,7 +9,7 @@ import logging
 from unittest.mock import Mock, AsyncMock
 
 
-from mongomodel.utils.decorators import (
+from pymongo_orm.utils.decorators import (
     timing_decorator,
     async_timing_decorator,
     retry,

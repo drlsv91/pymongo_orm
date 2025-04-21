@@ -5,8 +5,8 @@ Tests for the MongoDB connection classes.
 from pymongo import MongoClient
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from mongomodel.sync_model.connection import SyncMongoConnection
-from mongomodel.async_model.connection import AsyncMongoConnection
+from pymongo_orm.sync_model.connection import SyncMongoConnection
+from pymongo_orm.async_model.connection import AsyncMongoConnection
 
 
 class TestConnections:

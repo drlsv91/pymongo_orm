@@ -5,7 +5,7 @@ Tests for the asynchronous MongoDB model implementation.
 import pytest
 from pymongo import ASCENDING
 
-from mongomodel.async_model.model import AsyncMongoModel
+from pymongo_orm.async_model.model import AsyncMongoModel
 
 
 class TestUser(AsyncMongoModel):

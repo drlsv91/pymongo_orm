@@ -4,7 +4,7 @@ Tests for custom exception classes.
 
 import pytest
 
-from mongomodel.exceptions import (
+from pymongo_orm.exceptions import (
     MongoORMError,
     ConnectionError,
     QueryError,

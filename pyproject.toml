@@ -1,6 +1,6 @@
 [project]
 name = "pymongo_orm"
-version = "0.1.0"
+version = "0.1.2"
 description = "A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python"
 authors = [{ name = "Oluwaleye Victor", email = "o.oluwaleye93@gmail.com" }]
 readme = "README.md"

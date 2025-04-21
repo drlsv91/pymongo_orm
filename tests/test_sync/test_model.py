@@ -3,7 +3,7 @@ Tests for the synchronous MongoDB model implementation.
 """
 
 from pymongo import ASCENDING
-from mongomodel.sync_model.model import SyncMongoModel
+from pymongo_orm.sync_model.model import SyncMongoModel
 
 
 class TestUser(SyncMongoModel):

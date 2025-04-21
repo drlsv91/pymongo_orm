@@ -6,7 +6,7 @@ import pytest
 from pymongo import InsertOne, UpdateOne, DeleteOne, ASCENDING
 from bson import ObjectId
 
-from mongomodel.sync_model.model import SyncMongoModel
+from pymongo_orm.sync_model.model import SyncMongoModel
 
 
 class TestUser(SyncMongoModel):
