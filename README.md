@@ -1,4 +1,4 @@
-# Mongomodel ORM
+# Pymongo ORM
 
 A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python with support for both synchronous and asynchronous operations.
 
