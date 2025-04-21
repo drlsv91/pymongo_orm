@@ -21,7 +21,7 @@ def run_example():
     )
 
     # Get the database
-    db = connection.get_db(db_name="mongodb_orm_examples")
+    db = connection.get_db(db_name="mongodb_orm_sync_examples")
 
     try:
         # Ensure indexes are created

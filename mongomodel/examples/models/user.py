@@ -8,8 +8,8 @@ from typing import List, Optional
 from pydantic import EmailStr, Field, validator
 from pymongo import ASCENDING, DESCENDING
 
-from mongodb_lib.sync_model.model import SyncMongoModel
-from mongodb_lib.async_model.model import AsyncMongoModel
+from mongomodel.sync_model.model import SyncMongoModel
+from mongomodel.async_model.model import AsyncMongoModel
 
 
 class UserBase:

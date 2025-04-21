@@ -1,5 +1,5 @@
 [project]
-name = "mongodb-lib"
+name = "mongomodel"
 version = "0.1.0"
 description = "A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python"
 authors = [{ name = "Oluwaleye Victor", email = "o.oluwaleye93@gmail.com" }]
@@ -44,7 +44,7 @@ keywords = [
 
 
 [tool.poetry]
-packages = [{ include = "mongodb_lib" }]
+packages = [{ include = "mongomodel" }]
 
 
 [tool.poetry.group.dev.dependencies]
@@ -56,6 +56,8 @@ isort = "^6.0.1"
 mypy = "^1.15.0"
 ruff = "^0.11.6"
 pre-commit = "^4.2.0"
+pytest-watch = "^4.2.0"
+mongomock = "^4.3.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
