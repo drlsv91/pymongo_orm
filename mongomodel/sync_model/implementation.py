@@ -122,10 +122,8 @@ class SyncMongoImplementation(AbstractMongoImplementation):
         try:
             doc = collection.find_one(processed_query, projection)
             if doc:
-                # Convert _id to id for the model
-                if "_id" in doc:
-                    doc["id"] = str(doc.pop("_id"))
-                return model_class(**doc)
+
+                return doc_to_model(doc, model_class)
             return None
         except PyMongoError as e:
             logger.error(f"MongoDB error during find_one: {e}")
@@ -179,10 +177,8 @@ class SyncMongoImplementation(AbstractMongoImplementation):
 
             results = []
             for doc in cursor:
-                # Convert _id to id for the model
-                if "_id" in doc:
-                    doc["id"] = str(doc.pop("_id"))
-                results.append(model_class(**doc))
+
+                results.append(doc_to_model(doc, model_class))
             return results
         except PyMongoError as e:
             logger.error(f"MongoDB error during find: {e}")

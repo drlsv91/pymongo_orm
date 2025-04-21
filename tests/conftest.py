@@ -2,7 +2,8 @@
 Test configuration and fixtures for PyMongo ORM.
 """
 
-import asyncio
+import mongomock_motor
+from unittest.mock import AsyncMock, MagicMock
 import pytest
 import mongomock
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -13,17 +14,38 @@ from mongomodel.sync_model.connection import SyncMongoConnection
 from mongomodel.async_model.connection import AsyncMongoConnection
 
 
-# @pytest.fixture(scope="session")
-# def event_loop():
-#     """
-#     Create an instance of the default event loop for each test session.
-#     """
-#     loop = asyncio.get_event_loop_policy().new_event_loop()
-#     yield loop
-#     loop.close()
-
-
 # Fixtures for mock MongoDB connections
+@pytest.fixture
+def mock_motor_client():
+    """
+    Provide a mock Motor client for testing async operations.
+    """
+    mock_client = MagicMock(spec=AsyncIOMotorClient)
+    mock_db = MagicMock()
+    mock_collection = MagicMock()
+
+    # Setup the structure
+    mock_client.__getitem__.return_value = mock_db
+    mock_db.__getitem__.return_value = mock_collection
+
+    # Mock the async methods
+    mock_collection.insert_one = AsyncMock(
+        return_value=MagicMock(inserted_id="mock_id")
+    )
+    mock_collection.find_one = AsyncMock()
+    mock_collection.find = AsyncMock()
+    mock_collection.update_one = AsyncMock()
+    mock_collection.delete_one = AsyncMock(return_value=MagicMock(deleted_count=1))
+    mock_collection.delete_many = AsyncMock(return_value=MagicMock(deleted_count=1))
+    mock_collection.update_many = AsyncMock(return_value=MagicMock(modified_count=1))
+    mock_collection.count_documents = AsyncMock(return_value=1)
+    mock_collection.create_indexes = AsyncMock()
+    mock_collection.aggregate = AsyncMock()
+    mock_collection.bulk_write = AsyncMock()
+
+    return mock_client
+
+
 @pytest.fixture
 def mock_pymongo_client():
     """
@@ -33,11 +55,11 @@ def mock_pymongo_client():
 
 
 @pytest.fixture
-def mock_motor_client(mock_pymongo_client):
+def mock_motor_client():
     """
     Provide a mock Motor client for testing async operations.
     """
-    return AsyncIOMotorClient(delegate=mock_pymongo_client)
+    return mongomock_motor.AsyncMongoMockClient()
 
 
 # Fixtures for MongoDB connections using mocks

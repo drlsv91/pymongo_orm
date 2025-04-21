@@ -2,7 +2,9 @@
 Asynchronous MongoDB model implementation.
 """
 
-from typing import Any, Dict, List, Optional, Type, TypeVar, cast
+from datetime import datetime, timezone
+import inspect
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, cast
 
 from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorCollection
 
@@ -198,3 +200,16 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
             MongoDB implementation
         """
         return AsyncMongoImplementation
+
+    async def _run_hooks(self, hooks: List[Callable]) -> None:
+        """Run hooks, properly handling async hooks."""
+        for hook in hooks:
+            print(hook)
+            result = hook(self)
+            if inspect.iscoroutine(result):
+                await result
+
+    async def _prepare_for_save(self) -> None:
+        """Prepare the model for saving."""
+        self.updated_at = datetime.now(timezone.utc)
+        await self._run_hooks(self._pre_save_hooks)

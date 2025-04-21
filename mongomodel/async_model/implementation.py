@@ -41,7 +41,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             The saved model instance
         """
         # Prepare model and get data
-        model._prepare_for_save()
+        await model._prepare_for_save()
         collection = model.get_collection(db)
         model_data = model.model_dump(exclude={"id"})
 
@@ -62,7 +62,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
                 logger.debug(f"Updated document with id: {model.id}")
 
             # Run post-save hooks
-            model._run_hooks(model._post_save_hooks)
+            await model._run_hooks(model._post_save_hooks)
             return model
         except DuplicateKeyError as e:
             logger.error(f"Duplicate key error: {e}")
