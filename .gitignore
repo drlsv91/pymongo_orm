@@ -117,3 +117,5 @@ dmypy.json
 
 # Local MongoDB data
 /data/db/
+
+poetry.lock
