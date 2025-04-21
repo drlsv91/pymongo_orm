@@ -5,8 +5,8 @@ Tests for logging utilities.
 import logging
 from unittest.mock import patch
 
-from mongomodel.utils.logging import setup_logging, get_logger
-from mongomodel.config import LOG_FORMAT, DEFAULT_LOG_LEVEL
+from pymongo_orm.utils.logging import setup_logging, get_logger
+from pymongo_orm.config import LOG_FORMAT, DEFAULT_LOG_LEVEL
 
 
 class TestLogging:
@@ -23,7 +23,7 @@ class TestLogging:
         logger = setup_logging()
 
         # Check the logger
-        assert logger.name == "mongomodel"
+        assert logger.name == "pymongo_orm"
         assert logger.level == getattr(logging, DEFAULT_LOG_LEVEL)
 
         # Check that a handler is added
@@ -92,7 +92,7 @@ class TestLogging:
         logger = get_logger("test_module")
 
         # Check the logger
-        assert logger.name == "mongomodel.test_module"
+        assert logger.name == "pymongo_orm.test_module"
 
         # Test that it inherits the parent's settings
         # assert logger.level == getattr(logging, DEFAULT_LOG_LEVEL)
@@ -105,4 +105,4 @@ class TestLogging:
             assert (
                 logger.handlers == []
             )  # Child loggers don't have their own handlers by default
-            assert logger.parent.name == "mongomodel"  # Check parent logger
+            assert logger.parent.name == "pymongo_orm"  # Check parent logger

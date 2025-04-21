@@ -9,9 +9,9 @@ import mongomock
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 
-# mongomodel
-from mongomodel.sync_model.connection import SyncMongoConnection
-from mongomodel.async_model.connection import AsyncMongoConnection
+# pymongo_orm
+from pymongo_orm.sync_model.connection import SyncMongoConnection
+from pymongo_orm.async_model.connection import AsyncMongoConnection
 
 
 # Fixtures for mock MongoDB connections

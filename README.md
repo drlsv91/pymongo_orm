@@ -24,7 +24,7 @@ A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python wi
 ## Installation
 
 ```bash
-pip install mongomodel
+pip install pymongo_orm
 ```
 
 ## Quick Start
@@ -33,7 +33,7 @@ pip install mongomodel
 
 ```python
 import asyncio
-from mongomodel import AsyncMongoModel, AsyncMongoConnection
+from pymongo_orm import AsyncMongoModel, AsyncMongoConnection
 from pydantic import Field
 
 # Define your model
@@ -69,7 +69,7 @@ asyncio.run(main())
 ### Sync Example
 
 ```python
-from  mongomodel import SyncMongoModel, SyncMongoConnection
+from  pymongo_orm import SyncMongoModel, SyncMongoConnection
 from pydantic import Field
 
 # Define your model
@@ -165,9 +165,9 @@ result = await User.bulk_write(db, operations)
 ## Project Structure
 
 ```
-mongomodel/
+pymongo_orm/
 ├── src/
-│   └── mongomodel/           # Main package
+│   └── pymongo_orm/           # Main package
 │       ├── abstract/          # Abstract base classes
 │       ├── async_/            # Async implementation
 │       ├── sync/              # Sync implementation
@@ -191,8 +191,8 @@ Setup development environment:
 
 ```bash
 # Clone the repository
-git clone https://github.com/drlsv91/mongomodel.git
-cd mongomodel
+git clone https://github.com/drlsv91/pymongo_orm.git
+cd pymongo_orm
 
 # Create and activate a virtual environment
 python -m venv venv

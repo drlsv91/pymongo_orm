@@ -1,5 +1,5 @@
 [project]
-name = "mongomodel"
+name = "pymongo_orm"
 version = "0.1.0"
 description = "A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python"
 authors = [{ name = "Oluwaleye Victor", email = "o.oluwaleye93@gmail.com" }]
@@ -33,14 +33,14 @@ keywords = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/drlsv91/mongomodel"
-"Bug Tracker" = "https://github.com/drlsv91/mongomodel/issues"
-"Documentation" = "https://drlsv91.github.io/mongomodel/"
-"Source Code" = "https://github.com/drlsv91/mongomodel"
+"Homepage" = "https://github.com/drlsv91/pymongo_orm"
+"Bug Tracker" = "https://github.com/drlsv91/pymongo_orm/issues"
+"Documentation" = "https://drlsv91.github.io/pymongo_orm/"
+"Source Code" = "https://github.com/drlsv91/pymongo_orm"
 
 
 [tool.poetry]
-packages = [{ include = "mongomodel" }]
+packages = [{ include = "pymongo_orm" }]
 
 
 [tool.poetry.group.dev.dependencies]

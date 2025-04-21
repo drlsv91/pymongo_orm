@@ -23,7 +23,7 @@ def setup_logging(
         Configured logger instance
     """
     log_level = getattr(logging, level or DEFAULT_LOG_LEVEL)
-    logger = logging.getLogger("mongomodel")
+    logger = logging.getLogger("pymongo_orm")
     logger.setLevel(log_level)
 
     # Remove existing handlers
@@ -52,9 +52,9 @@ def get_logger(name: str) -> logging.Logger:
     Get a logger with the given name.
 
     Args:
-        name: Logger name (will be prefixed with 'mongomodel.')
+        name: Logger name (will be prefixed with 'pymongo_orm.')
 
     Returns:
         Logger instance
     """
-    return logging.getLogger(f"mongomodel.{name}")
+    return logging.getLogger(f"pymongo_orm.{name}")

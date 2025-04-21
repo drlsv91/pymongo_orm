@@ -1,6 +1,6 @@
-# Contributing to MomgoModel
+# Contributing to Pymongo_orm
 
-Thank you for your interest in contributing to MomgoModel ORM This document provides guidelines and instructions for contributing to this project.
+Thank you for your interest in contributing to Pymongo_orm ORM This document provides guidelines and instructions for contributing to this project.
 
 ## Table of Contents
 
@@ -30,14 +30,14 @@ By participating in this project, you agree to uphold our Code of Conduct. Pleas
 2. **Clone your fork** locally:
 
    ```bash
-   git clone https://github.com/drlsv91/mongomodel.git
-   cd mongomodel
+   git clone https://github.com/drlsv91/pymongo_orm.git
+   cd pymongo_orm
    ```
 
 3. **Set up the upstream remote**:
 
    ```bash
-   git remote add upstream https://github.com/drlsv91/mongomodel.git
+   git remote add upstream https://github.com/drlsv91/pymongo_orm.git
    ```
 
 4. **Create a virtual environment** and install dependencies:
@@ -61,9 +61,9 @@ By participating in this project, you agree to uphold our Code of Conduct. Pleas
 ### Project Structure
 
 ```
-mongomodel/
+pymongo_orm/
 ├── src/
-│   └── mongomodel/         # Main package
+│   └── pymongo_orm/         # Main package
 │       ├── abstract/        # Abstract base classes
 │       ├── async_/          # Async implementation
 │       ├── sync/            # Sync implementation
@@ -124,7 +124,7 @@ mongomodel/
 2. **Run with coverage** to ensure adequate test coverage:
 
    ```bash
-   pytest --cov=mongomodel tests/
+   pytest --cov=pymongo_orm tests/
    ```
 
 3. **Write new tests** for your features or bug fixes.
@@ -180,7 +180,7 @@ ruff  tests
 
 Releases are managed by maintainers using the following process:
 
-1. **Update version number** in `src/mongomodel/__init__.py` and `pyproject.toml`
+1. **Update version number** in `src/pymongo_orm/__init__.py` and `pyproject.toml`
 2. **Update CHANGELOG.md** with changes for the new version
 3. **Create a tag** for the new version
 4. **Build and publish** to PyPI
