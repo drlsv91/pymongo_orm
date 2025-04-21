@@ -33,7 +33,7 @@ pip install mongomodel
 
 ```python
 import asyncio
-from pymongo_orm import AsyncMongoModel, AsyncMongoConnection
+from mongomodel import AsyncMongoModel, AsyncMongoConnection
 from pydantic import Field
 
 # Define your model
@@ -69,7 +69,7 @@ asyncio.run(main())
 ### Sync Example
 
 ```python
-from pymongo_orm import SyncMongoModel, SyncMongoConnection
+from  mongomodel import SyncMongoModel, SyncMongoConnection
 from pydantic import Field
 
 # Define your model
@@ -165,9 +165,9 @@ result = await User.bulk_write(db, operations)
 ## Project Structure
 
 ```
-pymongo_orm/
+mongomodel/
 ├── src/
-│   └── pymongo_orm/           # Main package
+│   └── mongomodel/           # Main package
 │       ├── abstract/          # Abstract base classes
 │       ├── async_/            # Async implementation
 │       ├── sync/              # Sync implementation

@@ -62,9 +62,9 @@ By participating in this project, you agree to uphold our Code of Conduct. Pleas
 ### Project Structure
 
 ```
-pymongo_orm/
+mongomodel/
 ├── src/
-│   └── pymongo_orm/         # Main package
+│   └── mongomodel/         # Main package
 │       ├── abstract/        # Abstract base classes
 │       ├── async_/          # Async implementation
 │       ├── sync/            # Sync implementation
@@ -125,7 +125,7 @@ pymongo_orm/
 2. **Run with coverage** to ensure adequate test coverage:
 
    ```bash
-   pytest --cov=pymongo_orm tests/
+   pytest --cov=mongomodel tests/
    ```
 
 3. **Write new tests** for your features or bug fixes.
@@ -181,7 +181,7 @@ ruff src tests
 
 Releases are managed by maintainers using the following process:
 
-1. **Update version number** in `src/pymongo_orm/__init__.py` and `pyproject.toml`
+1. **Update version number** in `src/mongomodel/__init__.py` and `pyproject.toml`
 2. **Update CHANGELOG.md** with changes for the new version
 3. **Create a tag** for the new version
 4. **Build and publish** to PyPI

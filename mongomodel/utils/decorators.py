@@ -8,7 +8,7 @@ from functools import wraps
 from typing import Any, Callable, TypeVar, cast
 
 # Setup logger
-logger = logging.getLogger("mongodb_orm.decorators")
+logger = logging.getLogger("mongomodel.decorators")
 
 F = TypeVar("F", bound=Callable[..., Any])
 AsyncF = TypeVar("AsyncF", bound=Callable[..., Any])

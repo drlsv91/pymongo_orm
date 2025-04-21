@@ -37,10 +37,10 @@ keywords = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/drlsv91/pymongo_orm"
-"Bug Tracker" = "https://github.com/drlsv91/pymongo_orm/issues"
-"Documentation" = "https://drlsv91.github.io/pymongo_orm/"
-"Source Code" = "https://github.com/drlsv91/pymongo_orm"
+"Homepage" = "https://github.com/drlsv91/mongomodel"
+"Bug Tracker" = "https://github.com/drlsv91/mongomodel/issues"
+"Documentation" = "https://drlsv91.github.io/mongomodel/"
+"Source Code" = "https://github.com/drlsv91/mongomodel"
 
 
 [tool.poetry]
