@@ -1,6 +1,6 @@
-# Contributing to PyMongo ORM
+# Contributing to MomgoModel
 
-Thank you for your interest in contributing to PyMongo ORM! This document provides guidelines and instructions for contributing to this project.
+Thank you for your interest in contributing to MomgoModel ORM This document provides guidelines and instructions for contributing to this project.
 
 ## Table of Contents
 
@@ -30,21 +30,20 @@ By participating in this project, you agree to uphold our Code of Conduct. Pleas
 2. **Clone your fork** locally:
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/pymongo-orm.git
-   cd pymongo-orm
+   git clone https://github.com/drlsv91/mongomodel.git
+   cd mongomodel
    ```
 
 3. **Set up the upstream remote**:
 
    ```bash
-   git remote add upstream https://github.com/ORIGINAL_OWNER/pymongo-orm.git
+   git remote add upstream https://github.com/drlsv91/mongomodel.git
    ```
 
 4. **Create a virtual environment** and install dependencies:
 
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   poetry env activate  # On Windows: venv\Scripts\activate
 
    # Install the package in development mode with dev dependencies
    pip install -e ".[dev]"
@@ -142,10 +141,10 @@ This project uses:
 You can run all style checks with:
 
 ```bash
-black src tests
-isort src tests
-mypy src
-ruff src tests
+black  tests
+isort  tests
+mypy
+ruff  tests
 ```
 
 ### Documentation

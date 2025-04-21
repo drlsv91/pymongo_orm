@@ -4,7 +4,7 @@ Asynchronous MongoDB model implementation.
 
 from datetime import datetime, timezone
 import inspect
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, cast
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar
 
 from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorCollection
 
@@ -204,7 +204,6 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
     async def _run_hooks(self, hooks: List[Callable]) -> None:
         """Run hooks, properly handling async hooks."""
         for hook in hooks:
-            print(hook)
             result = hook(self)
             if inspect.iscoroutine(result):
                 await result

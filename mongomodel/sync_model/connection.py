@@ -40,7 +40,7 @@ class SyncMongoConnection(AbstractMongoConnection):
 
         with cls._lock:
             if uri not in cls._instances:
-                # Use object.__new__ instead of super().__new__
+
                 instance = object.__new__(cls)
                 connection_kwargs = {**DEFAULT_CONNECTION_OPTIONS, **kwargs}
 

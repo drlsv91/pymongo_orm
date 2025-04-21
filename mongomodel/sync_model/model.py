@@ -2,7 +2,7 @@
 Synchronous MongoDB model implementation.
 """
 
-from typing import Any, Dict, List, Optional, Type, TypeVar, cast
+from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from pymongo.database import Database
 from pymongo.collection import Collection

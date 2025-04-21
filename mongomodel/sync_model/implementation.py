@@ -14,7 +14,7 @@ from ..abstract.implementation import AbstractMongoImplementation
 from ..utils.decorators import timing_decorator
 from ..utils.converters import ensure_object_id, process_query, doc_to_model
 from ..utils.logging import get_logger
-from ..exceptions import MongoORMError, QueryError, ValidationError, IndexError
+from ..exceptions import MongoORMError, QueryError, IndexError
 
 # Type variables
 T = TypeVar("T")
@@ -79,7 +79,7 @@ class SyncMongoImplementation(AbstractMongoImplementation):
             else:
                 # Update existing document
                 result = collection.update_one(
-                    {"_id": ObjectId(model.id)}, {"$set": model_data}
+                    {"_id": ensure_object_id(model.id)}, {"$set": model_data}
                 )
                 if result.matched_count == 0:
                     logger.warning(f"No document found with id: {model.id}")
@@ -207,7 +207,7 @@ class SyncMongoImplementation(AbstractMongoImplementation):
             model._run_hooks(model._pre_delete_hooks)
 
             collection = model.get_collection(db)
-            result = collection.delete_one({"_id": ObjectId(model.id)})
+            result = collection.delete_one({"_id": ensure_object_id(model.id)})
 
             # Run post-delete hooks if deletion was successful
             if result.deleted_count > 0:

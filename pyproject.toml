@@ -5,11 +5,7 @@ description = "A lightweight, flexible Object-Relational Mapping (ORM) for Mongo
 authors = [{ name = "Oluwaleye Victor", email = "o.oluwaleye93@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.12,<4.0"
-dependencies = [
-    "motor (>=3.7.0,<4.0.0)",
-    "pydantic (>=2.11.3,<3.0.0)",
-    "setuptools (>=79.0.0,<80.0.0)",
-]
+dependencies = ["motor (>=3.7.0,<4.0.0)", "pydantic (>=2.11.3,<3.0.0)"]
 license = { text = "MIT" }
 classifiers = [
     "Development Status :: 4 - Beta",

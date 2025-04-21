@@ -2,7 +2,7 @@
 Type conversion utilities for MongoDB ORM.
 """
 
-from typing import Any, Dict, List, Optional, Union, TypeVar, Type, cast
+from typing import Any, Dict, List, Optional, Union, TypeVar, Type
 from datetime import datetime, timezone
 from bson import ObjectId
 

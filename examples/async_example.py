@@ -6,8 +6,8 @@ import asyncio
 import logging
 from datetime import datetime
 
-from ..async_model.connection import AsyncMongoConnection
-from ..utils.logging import setup_logging
+from mongomodel import AsyncMongoConnection
+from mongomodel import setup_logging
 from .models.user import AsyncUser
 
 

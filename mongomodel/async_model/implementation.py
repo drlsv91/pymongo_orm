@@ -180,14 +180,14 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
 
         try:
             # Run pre-delete hooks
-            model._run_hooks(model._pre_delete_hooks)
+            await model._run_hooks(model._pre_delete_hooks)
 
             collection = model.get_collection(db)
             result = await collection.delete_one({"_id": ensure_object_id(model.id)})
 
             # Run post-delete hooks if deletion was successful
             if result.deleted_count > 0:
-                model._run_hooks(model._post_delete_hooks)
+                await model._run_hooks(model._post_delete_hooks)
                 logger.debug(f"Deleted document with id: {model.id}")
                 return True
 

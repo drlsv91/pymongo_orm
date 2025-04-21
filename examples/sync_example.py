@@ -5,8 +5,8 @@ Synchronous MongoDB ORM example.
 import logging
 from datetime import datetime, timezone
 import pymongo
-from ..sync_model.connection import SyncMongoConnection
-from ..utils.logging import setup_logging
+from mongomodel import SyncMongoConnection
+from mongomodel import setup_logging
 from .models.user import SyncUser
 
 
@@ -160,3 +160,11 @@ def run_example():
         # Close the connection when done
         connection.close()
         print("Sync example completed")
+
+
+if __name__ == "__main__":
+    # Setup logging
+    setup_logging(level="INFO")
+
+    # Run the async example
+    run_example()
