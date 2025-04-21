@@ -2,26 +2,26 @@
 Asynchronous MongoDB implementation.
 """
 
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Type, TypeVar, Union
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from pymongo.errors import PyMongoError, DuplicateKeyError
 from pymongo import IndexModel
+from pymongo.errors import DuplicateKeyError, PyMongoError
 
 from ..abstract.implementation import AbstractMongoImplementation
+from ..exceptions import IndexError, MongoORMError, QueryError
+from ..utils.converters import doc_to_model, ensure_object_id, process_query
 from ..utils.decorators import async_timing_decorator
-from ..utils.converters import ensure_object_id, process_query, doc_to_model
 from ..utils.logging import get_logger
-from ..exceptions import MongoORMError, QueryError, ValidationError, IndexError
 
 # Type variables
 T = TypeVar("T")
 QueryType = Dict[str, Any]
 ProjectionType = Dict[str, Any]
 
-logger = get_logger("async.implementation")
+logger = get_logger("async_model.implementation")
 
 
 class AsyncMongoImplementation(AbstractMongoImplementation):
@@ -54,7 +54,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             else:
                 # Update existing document
                 result = await collection.update_one(
-                    {"_id": ObjectId(model.id)},
+                    {"_id": ensure_object_id(model.id)},
                     {"$set": model_data},
                 )
                 if result.matched_count == 0:
@@ -98,10 +98,8 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         try:
             doc = await collection.find_one(processed_query, projection)
             if doc:
-                # Convert _id to id for the model
-                if "_id" in doc:
-                    doc["id"] = str(doc.pop("_id"))
-                return model_class(**doc)
+
+                return doc_to_model(doc)
             return None
         except PyMongoError as e:
             logger.error(f"MongoDB error during find_one: {e}")
@@ -155,10 +153,8 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
 
             results = []
             async for doc in cursor:
-                # Convert _id to id for the model
-                if "_id" in doc:
-                    doc["id"] = str(doc.pop("_id"))
-                results.append(model_class(**doc))
+
+                results.append(doc_to_model(doc, model_class))
             return results
         except PyMongoError as e:
             logger.error(f"MongoDB error during find: {e}")
@@ -187,7 +183,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             model._run_hooks(model._pre_delete_hooks)
 
             collection = model.get_collection(db)
-            result = await collection.delete_one({"_id": ObjectId(model.id)})
+            result = await collection.delete_one({"_id": ensure_object_id(model.id)})
 
             # Run post-delete hooks if deletion was successful
             if result.deleted_count > 0:
@@ -260,9 +256,9 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
 
         # Add updated_at timestamp
         if "$set" in update:
-            update["$set"]["updated_at"] = datetime.utcnow()
+            update["$set"]["updated_at"] = datetime.now(timezone.utc)
         else:
-            update["$set"] = {"updated_at": datetime.utcnow()}
+            update["$set"] = {"updated_at": datetime.now(timezone.utc)}
 
         try:
             result = await collection.update_many(processed_query, update)
