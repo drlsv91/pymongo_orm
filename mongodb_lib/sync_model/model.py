@@ -1,34 +1,35 @@
 """
-Asynchronous MongoDB model implementation.
+Synchronous MongoDB model implementation.
 """
 
 from typing import Any, Dict, List, Optional, Type, TypeVar, cast
 
-from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorCollection
+from pymongo.database import Database
+from pymongo.collection import Collection
 
 from ..abstract.model import AbstractMongoModel
 from ..abstract.implementation import AbstractMongoImplementation
-from .implementation import AsyncMongoImplementation
+from .implementation import SyncMongoImplementation
 from ..utils.logging import get_logger
 
 # Type variables
-T = TypeVar("T", bound="AsyncMongoModel")
+T = TypeVar("T", bound="SyncMongoModel")
 QueryType = Dict[str, Any]
 ProjectionType = Dict[str, Any]
 SortType = List[tuple]
 
-logger = get_logger("async.model")
+logger = get_logger("sync.model")
 
 
-class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorCollection]):
+class SyncMongoModel(AbstractMongoModel[Database, Collection]):
     """
-    Base class for asynchronous MongoDB models.
+    Base class for synchronous MongoDB models.
 
     This class implements the abstract methods from AbstractMongoModel using
-    the asynchronous implementation.
+    the synchronous implementation.
     """
 
-    async def save(self, db: AsyncIOMotorDatabase) -> T:
+    def save(self, db: Database) -> T:
         """
         Save the model to the database.
 
@@ -38,12 +39,12 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             Saved model instance
         """
-        return await AsyncMongoImplementation.save(self, db)
+        return SyncMongoImplementation.save(self, db)
 
     @classmethod
-    async def find_one(
+    def find_one(
         cls: Type[T],
-        db: AsyncIOMotorDatabase,
+        db: Database,
         query: QueryType,
         projection: Optional[ProjectionType] = None,
     ) -> Optional[T]:
@@ -58,12 +59,12 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             Model instance or None if not found
         """
-        return await AsyncMongoImplementation.find_one(cls, db, query, projection)
+        return SyncMongoImplementation.find_one(cls, db, query, projection)
 
     @classmethod
-    async def find(
+    def find(
         cls: Type[T],
-        db: AsyncIOMotorDatabase,
+        db: Database,
         query: Optional[QueryType] = None,
         projection: Optional[ProjectionType] = None,
         sort: Optional[SortType] = None,
@@ -84,11 +85,11 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             List of model instances
         """
-        return await AsyncMongoImplementation.find(
+        return SyncMongoImplementation.find(
             cls, db, query, projection, sort, skip, limit
         )
 
-    async def delete(self, db: AsyncIOMotorDatabase) -> bool:
+    def delete(self, db: Database) -> bool:
         """
         Delete this document from the database.
 
@@ -98,10 +99,10 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             True if deleted, False otherwise
         """
-        return await AsyncMongoImplementation.delete(self, db)
+        return SyncMongoImplementation.delete(self, db)
 
     @classmethod
-    async def delete_many(cls, db: AsyncIOMotorDatabase, query: QueryType) -> int:
+    def delete_many(cls, db: Database, query: QueryType) -> int:
         """
         Delete multiple documents matching the query.
 
@@ -112,12 +113,10 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             Number of documents deleted
         """
-        return await AsyncMongoImplementation.delete_many(cls, db, query)
+        return SyncMongoImplementation.delete_many(cls, db, query)
 
     @classmethod
-    async def update_many(
-        cls, db: AsyncIOMotorDatabase, query: QueryType, update: Dict[str, Any]
-    ) -> int:
+    def update_many(cls, db: Database, query: QueryType, update: Dict[str, Any]) -> int:
         """
         Update multiple documents matching the query.
 
@@ -129,12 +128,10 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             Number of documents updated
         """
-        return await AsyncMongoImplementation.update_many(cls, db, query, update)
+        return SyncMongoImplementation.update_many(cls, db, query, update)
 
     @classmethod
-    async def count(
-        cls, db: AsyncIOMotorDatabase, query: Optional[QueryType] = None
-    ) -> int:
+    def count(cls, db: Database, query: Optional[QueryType] = None) -> int:
         """
         Count documents matching the query.
 
@@ -145,21 +142,21 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             Document count
         """
-        return await AsyncMongoImplementation.count(cls, db, query)
+        return SyncMongoImplementation.count(cls, db, query)
 
     @classmethod
-    async def ensure_indexes(cls, db: AsyncIOMotorDatabase) -> None:
+    def ensure_indexes(cls, db: Database) -> None:
         """
         Create indexes for this collection.
 
         Args:
             db: Database instance
         """
-        await AsyncMongoImplementation.ensure_indexes(cls, db)
+        SyncMongoImplementation.ensure_indexes(cls, db)
 
     @classmethod
-    async def aggregate(
-        cls, db: AsyncIOMotorDatabase, pipeline: List[Dict[str, Any]]
+    def aggregate(
+        cls, db: Database, pipeline: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
         """
         Run an aggregation pipeline.
@@ -171,12 +168,10 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             Pipeline results
         """
-        return await AsyncMongoImplementation.aggregate(cls, db, pipeline)
+        return SyncMongoImplementation.aggregate(cls, db, pipeline)
 
     @classmethod
-    async def bulk_write(
-        cls, db: AsyncIOMotorDatabase, operations: List[Dict[str, Any]]
-    ) -> Any:
+    def bulk_write(cls, db: Database, operations: List[Dict[str, Any]]) -> Any:
         """
         Execute multiple write operations.
 
@@ -187,7 +182,7 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             Bulk write result
         """
-        return await AsyncMongoImplementation.bulk_write(cls, db, operations)
+        return SyncMongoImplementation.bulk_write(cls, db, operations)
 
     @classmethod
     def get_mongo_implementation(cls) -> Type[AbstractMongoImplementation]:
@@ -197,4 +192,4 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
         Returns:
             MongoDB implementation
         """
-        return AsyncMongoImplementation
+        return SyncMongoImplementation

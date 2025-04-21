@@ -1,16 +1,93 @@
 [project]
 name = "mongodb-lib"
 version = "0.1.0"
-description = ""
-authors = [{ name = "Oluwaleye Victor", email = "oluwasquarelsv@gmail.com" }]
+description = "A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python"
+authors = [{ name = "Oluwaleye Victor", email = "o.oluwaleye93@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["motor (>=3.7.0,<4.0.0)", "pydantic (>=2.11.3,<3.0.0)"]
+dependencies = [
+    "motor (>=3.7.0,<4.0.0)",
+    "pydantic (>=2.11.3,<3.0.0)",
+    "setuptools (>=79.0.0,<80.0.0)",
+]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+keywords = [
+    "mongodb",
+    "orm",
+    "database",
+    "pymongo",
+    "motor",
+    "async",
+    "pydantic",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/drlsv91/pymongo_orm"
+"Bug Tracker" = "https://github.com/drlsv91/pymongo_orm/issues"
+"Documentation" = "https://drlsv91.github.io/pymongo_orm/"
+"Source Code" = "https://github.com/drlsv91/pymongo_orm"
+
 
 [tool.poetry]
 packages = [{ include = "mongodb_lib" }]
 
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pytest-asyncio = "^0.26.0"
+pytest-cov = "^6.1.1"
+black = "^25.1.0"
+isort = "^6.0.1"
+mypy = "^1.15.0"
+ruff = "^0.11.6"
+pre-commit = "^4.2.0"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 88
+target-version = ["py37", "py38", "py39", "py310", "py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+strict_optional = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = "test_*.py"
+
+[tool.ruff]
+select = ["E", "F", "B", "I"]
+ignore = []
+line-length = 88
+target-version = "py37"

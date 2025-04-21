@@ -1,35 +1,60 @@
 """
-Asynchronous MongoDB implementation.
+Synchronous MongoDB implementation.
 """
 
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 from bson import ObjectId
-from motor.motor_asyncio import AsyncIOMotorDatabase
+from pymongo.database import Database
+from pymongo.errors import PyMongoError, DuplicateKeyError
 from pymongo import IndexModel
-from pymongo.errors import DuplicateKeyError, PyMongoError
 
 from ..abstract.implementation import AbstractMongoImplementation
-from ..exceptions import IndexError, MongoORMError, QueryError
-from ..utils.converters import doc_to_model, ensure_object_id, process_query
-from ..utils.decorators import async_timing_decorator
+from ..utils.decorators import timing_decorator
+from ..utils.converters import ensure_object_id, process_query, doc_to_model
 from ..utils.logging import get_logger
+from ..exceptions import MongoORMError, QueryError, ValidationError, IndexError
 
 # Type variables
 T = TypeVar("T")
 QueryType = Dict[str, Any]
 ProjectionType = Dict[str, Any]
 
-logger = get_logger("async_model.implementation")
+logger = get_logger("sync.implementation")
 
 
-class AsyncMongoImplementation(AbstractMongoImplementation):
-    """Asynchronous MongoDB implementation using Motor."""
+class SyncMongoImplementation(AbstractMongoImplementation):
+    """Synchronous MongoDB implementation using PyMongo."""
 
     @classmethod
-    @async_timing_decorator
-    async def save(cls, model: Any, db: AsyncIOMotorDatabase) -> Any:
+    @timing_decorator
+    def bulk_write(
+        cls, model_class: Type[T], db: Database, operations: List[Dict[str, Any]]
+    ) -> Any:
+        """
+        Execute multiple write operations.
+
+        Args:
+            model_class: Model class
+            db: Database instance
+            operations: Write operations
+
+        Returns:
+            Bulk write result
+        """
+        collection = model_class.get_collection(db)
+
+        try:
+            result = collection.bulk_write(operations)
+            return result
+        except PyMongoError as e:
+            logger.error(f"MongoDB error during bulk_write: {e}")
+            raise MongoORMError(f"Bulk write error: {e}")
+
+    @classmethod
+    @timing_decorator
+    def save(cls, model: Any, db: Database) -> Any:
         """
         Save a model to the database.
 
@@ -48,14 +73,13 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         try:
             if model.id is None:
                 # Insert new document
-                result = await collection.insert_one(model_data)
+                result = collection.insert_one(model_data)
                 model.id = str(result.inserted_id)
                 logger.debug(f"Created document with id: {model.id}")
             else:
                 # Update existing document
-                result = await collection.update_one(
-                    {"_id": ensure_object_id(model.id)},
-                    {"$set": model_data},
+                result = collection.update_one(
+                    {"_id": ObjectId(model.id)}, {"$set": model_data}
                 )
                 if result.matched_count == 0:
                     logger.warning(f"No document found with id: {model.id}")
@@ -72,11 +96,11 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             raise MongoORMError(f"Failed to save document: {e}")
 
     @classmethod
-    @async_timing_decorator
-    async def find_one(
+    @timing_decorator
+    def find_one(
         cls,
         model_class: Type[T],
-        db: AsyncIOMotorDatabase,
+        db: Database,
         query: QueryType,
         projection: Optional[ProjectionType] = None,
     ) -> Optional[T]:
@@ -96,10 +120,12 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         processed_query = process_query(query)
 
         try:
-            doc = await collection.find_one(processed_query, projection)
+            doc = collection.find_one(processed_query, projection)
             if doc:
-
-                return doc_to_model(doc, model_class)
+                # Convert _id to id for the model
+                if "_id" in doc:
+                    doc["id"] = str(doc.pop("_id"))
+                return model_class(**doc)
             return None
         except PyMongoError as e:
             logger.error(f"MongoDB error during find_one: {e}")
@@ -108,11 +134,11 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             )
 
     @classmethod
-    @async_timing_decorator
-    async def find(
+    @timing_decorator
+    def find(
         cls,
         model_class: Type[T],
-        db: AsyncIOMotorDatabase,
+        db: Database,
         query: Optional[QueryType] = None,
         projection: Optional[ProjectionType] = None,
         sort: Optional[List[tuple]] = None,
@@ -152,9 +178,11 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
                 cursor = cursor.limit(limit)
 
             results = []
-            async for doc in cursor:
-
-                results.append(doc_to_model(doc, model_class))
+            for doc in cursor:
+                # Convert _id to id for the model
+                if "_id" in doc:
+                    doc["id"] = str(doc.pop("_id"))
+                results.append(model_class(**doc))
             return results
         except PyMongoError as e:
             logger.error(f"MongoDB error during find: {e}")
@@ -163,8 +191,8 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             )
 
     @classmethod
-    @async_timing_decorator
-    async def delete(cls, model: Any, db: AsyncIOMotorDatabase) -> bool:
+    @timing_decorator
+    def delete(cls, model: Any, db: Database) -> bool:
         """
         Delete a model from the database.
 
@@ -183,7 +211,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             model._run_hooks(model._pre_delete_hooks)
 
             collection = model.get_collection(db)
-            result = await collection.delete_one({"_id": ensure_object_id(model.id)})
+            result = collection.delete_one({"_id": ObjectId(model.id)})
 
             # Run post-delete hooks if deletion was successful
             if result.deleted_count > 0:
@@ -198,10 +226,8 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             raise MongoORMError(f"Failed to delete document: {e}")
 
     @classmethod
-    @async_timing_decorator
-    async def delete_many(
-        cls, model_class: Type[T], db: AsyncIOMotorDatabase, query: QueryType
-    ) -> int:
+    @timing_decorator
+    def delete_many(cls, model_class: Type[T], db: Database, query: QueryType) -> int:
         """
         Delete multiple documents matching the query.
 
@@ -217,7 +243,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         processed_query = process_query(query)
 
         try:
-            result = await collection.delete_many(processed_query)
+            result = collection.delete_many(processed_query)
             logger.debug(f"Deleted {result.deleted_count} documents")
             return result.deleted_count
         except PyMongoError as e:
@@ -227,11 +253,11 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             )
 
     @classmethod
-    @async_timing_decorator
-    async def update_many(
+    @timing_decorator
+    def update_many(
         cls,
         model_class: Type[T],
-        db: AsyncIOMotorDatabase,
+        db: Database,
         query: QueryType,
         update: Dict[str, Any],
     ) -> int:
@@ -261,7 +287,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             update["$set"] = {"updated_at": datetime.now(timezone.utc)}
 
         try:
-            result = await collection.update_many(processed_query, update)
+            result = collection.update_many(processed_query, update)
             logger.debug(f"Updated {result.modified_count} documents")
             return result.modified_count
         except PyMongoError as e:
@@ -271,12 +297,9 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             )
 
     @classmethod
-    @async_timing_decorator
-    async def count(
-        cls,
-        model_class: Type[T],
-        db: AsyncIOMotorDatabase,
-        query: Optional[QueryType] = None,
+    @timing_decorator
+    def count(
+        cls, model_class: Type[T], db: Database, query: Optional[QueryType] = None
     ) -> int:
         """
         Count documents matching the query.
@@ -296,7 +319,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         processed_query = process_query(query)
 
         try:
-            count = await collection.count_documents(processed_query)
+            count = collection.count_documents(processed_query)
             return count
         except PyMongoError as e:
             logger.error(f"MongoDB error during count: {e}")
@@ -305,10 +328,8 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             )
 
     @classmethod
-    @async_timing_decorator
-    async def ensure_indexes(
-        cls, model_class: Type[T], db: AsyncIOMotorDatabase
-    ) -> None:
+    @timing_decorator
+    def ensure_indexes(cls, model_class: Type[T], db: Database) -> None:
         """
         Create indexes for the model collection.
 
@@ -339,7 +360,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
                 index_models.append(IndexModel(processed_fields, **kwargs))
 
             if index_models:
-                result = await collection.create_indexes(index_models)
+                result = collection.create_indexes(index_models)
                 logger.info(
                     f"Created {len(index_models)} indexes for {model_class.__name__}"
                 )
@@ -350,12 +371,9 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
             )
 
     @classmethod
-    @async_timing_decorator
-    async def aggregate(
-        cls,
-        model_class: Type[T],
-        db: AsyncIOMotorDatabase,
-        pipeline: List[Dict[str, Any]],
+    @timing_decorator
+    def aggregate(
+        cls, model_class: Type[T], db: Database, pipeline: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
         """
         Run an aggregation pipeline.
@@ -373,7 +391,7 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         try:
             result = []
             cursor = collection.aggregate(pipeline)
-            async for doc in cursor:
+            for doc in cursor:
                 # Convert ObjectId to string for _id
                 if "_id" in doc and isinstance(doc["_id"], ObjectId):
                     doc["id"] = str(doc.pop("_id"))
@@ -382,31 +400,3 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during aggregate: {e}")
             raise MongoORMError(f"Aggregation pipeline error: {e}")
-
-    @classmethod
-    @async_timing_decorator
-    async def bulk_write(
-        cls,
-        model_class: Type[T],
-        db: AsyncIOMotorDatabase,
-        operations: List[Dict[str, Any]],
-    ) -> Any:
-        """
-        Execute multiple write operations.
-
-        Args:
-            model_class: Model class
-            db: Database instance
-            operations: Write operations
-
-        Returns:
-            Bulk write result
-        """
-        collection = model_class.get_collection(db)
-
-        try:
-            result = await collection.bulk_write(operations)
-            return result
-        except PyMongoError as e:
-            logger.error(f"MongoDB error during bulk_write: {e}")
-            raise MongoORMError(f"Bulk write error: {e}")

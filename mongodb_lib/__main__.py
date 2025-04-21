@@ -1,4 +1,5 @@
 import asyncio
-from .examples.async_example import async_func
+from .examples.async_example import run_example
 
-asyncio.run(async_func())
+# run_example()
+asyncio.run(run_example())
