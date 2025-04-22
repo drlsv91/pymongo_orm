@@ -127,27 +127,6 @@ class User(AsyncMongoModel):
 await User.ensure_indexes(db)
 ```
 
-### Indexes
-
-```python
-from pymongo import ASCENDING, DESCENDING
-
-class User(AsyncMongoModel):
-    __collection__ = "users"
-    __indexes__ = [
-        {"fields": [("email", ASCENDING)], "unique": True, "background": True},
-        {"fields": [("name", ASCENDING), ("age", DESCENDING)], "sparse": True},
-        {"fields": [("created_at", DESCENDING)], "expireAfterSeconds": 86400}
-    ]
-
-    name: str
-    email: str
-    age: int
-
-# Create indexes
-await User.ensure_indexes(db)
-```
-
 ### Aggregation
 
 ```python
