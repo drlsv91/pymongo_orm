@@ -3,7 +3,7 @@ Abstract MongoDB implementation interface.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Type, TypeVar, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
 
 # Type variables
 T = TypeVar("T")
@@ -34,7 +34,6 @@ class AbstractMongoImplementation(ABC):
         Returns:
             The saved model instance
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -57,7 +56,6 @@ class AbstractMongoImplementation(ABC):
         Returns:
             Model instance or None if not found
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -86,7 +84,6 @@ class AbstractMongoImplementation(ABC):
         Returns:
             List of model instances
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -101,7 +98,6 @@ class AbstractMongoImplementation(ABC):
         Returns:
             True if deleted, False otherwise
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -117,12 +113,15 @@ class AbstractMongoImplementation(ABC):
         Returns:
             Number of documents deleted
         """
-        pass
 
     @classmethod
     @abstractmethod
     def update_many(
-        cls, model_class: Type[T], db: D, query: QueryType, update: Dict[str, Any]
+        cls,
+        model_class: Type[T],
+        db: D,
+        query: QueryType,
+        update: Dict[str, Any],
     ) -> int:
         """
         Update multiple documents matching the query.
@@ -136,12 +135,14 @@ class AbstractMongoImplementation(ABC):
         Returns:
             Number of documents updated
         """
-        pass
 
     @classmethod
     @abstractmethod
     def count(
-        cls, model_class: Type[T], db: D, query: Optional[QueryType] = None
+        cls,
+        model_class: Type[T],
+        db: D,
+        query: Optional[QueryType] = None,
     ) -> int:
         """
         Count documents matching the query.
@@ -154,7 +155,6 @@ class AbstractMongoImplementation(ABC):
         Returns:
             Document count
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -166,12 +166,14 @@ class AbstractMongoImplementation(ABC):
             model_class: Model class
             db: Database instance
         """
-        pass
 
     @classmethod
     @abstractmethod
     def aggregate(
-        cls, model_class: Type[T], db: D, pipeline: List[Dict[str, Any]]
+        cls,
+        model_class: Type[T],
+        db: D,
+        pipeline: List[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
         """
         Run an aggregation pipeline.
@@ -184,12 +186,14 @@ class AbstractMongoImplementation(ABC):
         Returns:
             Pipeline results
         """
-        pass
 
     @classmethod
     @abstractmethod
     def bulk_write(
-        cls, model_class: Type[T], db: D, operations: List[Dict[str, Any]]
+        cls,
+        model_class: Type[T],
+        db: D,
+        operations: List[Dict[str, Any]],
     ) -> Any:
         """
         Execute multiple write operations.
@@ -202,4 +206,3 @@ class AbstractMongoImplementation(ABC):
         Returns:
             Bulk write result
         """
-        pass

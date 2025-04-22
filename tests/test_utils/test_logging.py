@@ -5,8 +5,8 @@ Tests for logging utilities.
 import logging
 from unittest.mock import patch
 
-from pymongo_orm.utils.logging import setup_logging, get_logger
-from pymongo_orm.config import LOG_FORMAT, DEFAULT_LOG_LEVEL
+from pymongo_orm.config import DEFAULT_LOG_LEVEL, LOG_FORMAT
+from pymongo_orm.utils.logging import get_logger, setup_logging
 
 
 class TestLogging:
@@ -73,7 +73,7 @@ class TestLogging:
         logger.info("Test log message")
 
         # Check that the message was written to the file
-        with open(log_file, "r") as f:
+        with open(log_file) as f:
             log_content = f.read()
 
         assert "Test log message" in log_content
@@ -98,7 +98,7 @@ class TestLogging:
         # assert logger.level == getattr(logging, DEFAULT_LOG_LEVEL)
 
         # Test that logging works
-        with patch("sys.stdout") as mock_stdout:
+        with patch("sys.stdout"):
             logger.info("Test log message")
             # We can't easily check stdout directly due to logger's asynchronous nature
             # But we can verify the logger is properly configured

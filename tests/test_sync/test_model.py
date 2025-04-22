@@ -3,6 +3,7 @@ Tests for the synchronous MongoDB model implementation.
 """
 
 from pymongo import ASCENDING
+
 from pymongo_orm.sync_model.model import SyncMongoModel
 
 
@@ -59,7 +60,8 @@ class TestSyncModel:
 
         # # Test find with projection
         users_with_projection = TestUser.find(
-            sync_db, projection={"name": 1, "email": 1, "age": 1}
+            sync_db,
+            projection={"name": 1, "email": 1, "age": 1},
         )
         assert len(users_with_projection) == len(test_data["users"])
         assert hasattr(users_with_projection[0], "name")
@@ -140,7 +142,9 @@ class TestSyncModel:
 
         # Update users under 30
         updated = TestUser.update_many(
-            sync_db, {"age": {"$lt": 30}}, {"$set": {"name": "Updated Name"}}
+            sync_db,
+            {"age": {"$lt": 30}},
+            {"$set": {"name": "Updated Name"}},
         )
         assert updated == 1
 
@@ -174,7 +178,7 @@ class TestSyncModel:
         assert len(result) == 1
         assert "avgAge" in result[0]
         assert result[0]["avgAge"] == sum(u["age"] for u in test_data["users"]) / len(
-            test_data["users"]
+            test_data["users"],
         )
 
     def test_hooks(self, sync_db, test_data):

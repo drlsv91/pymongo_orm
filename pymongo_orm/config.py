@@ -2,7 +2,7 @@
 Configuration settings for MongoDB ORM.
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
 
 # Connection defaults
 DEFAULT_BATCH_SIZE = 100

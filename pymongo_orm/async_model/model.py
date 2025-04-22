@@ -2,16 +2,16 @@
 Asynchronous MongoDB model implementation.
 """
 
-from datetime import datetime, timezone
 import inspect
+from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar
 
-from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorCollection
+from motor.motor_asyncio import AsyncIOMotorCollection, AsyncIOMotorDatabase
 
-from ..abstract.model import AbstractMongoModel
 from ..abstract.implementation import AbstractMongoImplementation
-from .implementation import AsyncMongoImplementation
+from ..abstract.model import AbstractMongoModel
 from ..utils.logging import get_logger
+from .implementation import AsyncMongoImplementation
 
 # Type variables
 T = TypeVar("T", bound="AsyncMongoModel")
@@ -87,7 +87,13 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
             List of model instances
         """
         return await AsyncMongoImplementation.find(
-            cls, db, query, projection, sort, skip, limit
+            cls,
+            db,
+            query,
+            projection,
+            sort,
+            skip,
+            limit,
         )
 
     async def delete(self, db: AsyncIOMotorDatabase) -> bool:
@@ -118,7 +124,10 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
 
     @classmethod
     async def update_many(
-        cls, db: AsyncIOMotorDatabase, query: QueryType, update: Dict[str, Any]
+        cls,
+        db: AsyncIOMotorDatabase,
+        query: QueryType,
+        update: Dict[str, Any],
     ) -> int:
         """
         Update multiple documents matching the query.
@@ -135,7 +144,9 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
 
     @classmethod
     async def count(
-        cls, db: AsyncIOMotorDatabase, query: Optional[QueryType] = None
+        cls,
+        db: AsyncIOMotorDatabase,
+        query: Optional[QueryType] = None,
     ) -> int:
         """
         Count documents matching the query.
@@ -161,7 +172,9 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
 
     @classmethod
     async def aggregate(
-        cls, db: AsyncIOMotorDatabase, pipeline: List[Dict[str, Any]]
+        cls,
+        db: AsyncIOMotorDatabase,
+        pipeline: List[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
         """
         Run an aggregation pipeline.
@@ -177,7 +190,9 @@ class AsyncMongoModel(AbstractMongoModel[AsyncIOMotorDatabase, AsyncIOMotorColle
 
     @classmethod
     async def bulk_write(
-        cls, db: AsyncIOMotorDatabase, operations: List[Dict[str, Any]]
+        cls,
+        db: AsyncIOMotorDatabase,
+        operations: List[Dict[str, Any]],
     ) -> Any:
         """
         Execute multiple write operations.

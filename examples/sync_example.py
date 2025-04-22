@@ -4,10 +4,11 @@ Synchronous MongoDB ORM example.
 
 import logging
 from datetime import datetime, timezone
+
 import pymongo
-from pymongo_orm import SyncMongoConnection
-from pymongo_orm import setup_logging
-from .models.user import SyncUser
+
+from examples.models.user import SyncUser
+from pymongo_orm import SyncMongoConnection, setup_logging
 
 
 def run_example():
@@ -17,11 +18,13 @@ def run_example():
 
     # Create a connection
     connection = SyncMongoConnection(
-        "mongodb://localhost:27017", maxPoolSize=10, appname="SyncExample"
+        "mongodb://localhost:27017",
+        maxPoolSize=10,
+        appname="SyncExample",
     )
 
     # Get the database
-    db = connection.get_db(db_name="mongodb_orm_sync_examples")
+    db = connection.get_db(db_name="sync_examples")
 
     try:
         # Ensure indexes are created
@@ -49,7 +52,7 @@ def run_example():
         found_user = SyncUser.find_by_email(db, "jane.doe@example.com")
         if found_user:
             print(
-                f"Found user: {found_user.name}, {found_user.email}, {found_user.age}"
+                f"Found user: {found_user.name}, {found_user.email}, {found_user.age}",
             )
 
         # Find users with filtering, projection, and sorting
@@ -116,7 +119,9 @@ def run_example():
 
         # Perform batch update
         updated = SyncUser.update_many(
-            db, {"roles": "user"}, {"$set": {"is_active": True}}
+            db,
+            {"roles": "user"},
+            {"$set": {"is_active": True}},
         )
         print(f"Updated {updated} users")
 
@@ -130,7 +135,7 @@ def run_example():
         print(f"Deleted {deleted_count} users")
 
         # Demonstrate bulk write operations
-        from pymongo import InsertOne, UpdateOne, DeleteOne
+        from pymongo import DeleteOne, InsertOne, UpdateOne
 
         bulk_operations = [
             InsertOne(
@@ -142,7 +147,7 @@ def run_example():
                     "is_active": True,
                     "created_at": datetime.now(timezone.utc),
                     "updated_at": datetime.now(timezone.utc),
-                }
+                },
             ),
             UpdateOne({"email": "frank@example.com"}, {"$set": {"age": 46}}),
             DeleteOne({"email": "nonexistent@example.com"}),
@@ -151,7 +156,7 @@ def run_example():
         bulk_result = SyncUser.bulk_write(db, bulk_operations)
         print(
             f"Bulk write results: {bulk_result.inserted_count} inserted, "
-            f"{bulk_result.modified_count} modified, {bulk_result.deleted_count} deleted"
+            f"{bulk_result.modified_count} modified, {bulk_result.deleted_count} deleted",
         )
 
     except Exception as e:

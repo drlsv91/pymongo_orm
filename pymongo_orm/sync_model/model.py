@@ -4,13 +4,13 @@ Synchronous MongoDB model implementation.
 
 from typing import Any, Dict, List, Optional, Type, TypeVar
 
-from pymongo.database import Database
 from pymongo.collection import Collection
+from pymongo.database import Database
 
-from ..abstract.model import AbstractMongoModel
 from ..abstract.implementation import AbstractMongoImplementation
-from .implementation import SyncMongoImplementation
+from ..abstract.model import AbstractMongoModel
 from ..utils.logging import get_logger
+from .implementation import SyncMongoImplementation
 
 # Type variables
 T = TypeVar("T", bound="SyncMongoModel")
@@ -86,7 +86,13 @@ class SyncMongoModel(AbstractMongoModel[Database, Collection]):
             List of model instances
         """
         return SyncMongoImplementation.find(
-            cls, db, query, projection, sort, skip, limit
+            cls,
+            db,
+            query,
+            projection,
+            sort,
+            skip,
+            limit,
         )
 
     def delete(self, db: Database) -> bool:
@@ -156,7 +162,9 @@ class SyncMongoModel(AbstractMongoModel[Database, Collection]):
 
     @classmethod
     def aggregate(
-        cls, db: Database, pipeline: List[Dict[str, Any]]
+        cls,
+        db: Database,
+        pipeline: List[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
         """
         Run an aggregation pipeline.

@@ -1,0 +1,53 @@
+name: Publish Package
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g., 0.1.0)"
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.5.1
+          virtualenvs-create: true
+
+      - name: Update version
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          # Extract version from input
+          VERSION="${{ github.event.inputs.version }}"
+
+          # Update version in Poetry config
+          poetry version $VERSION
+
+          # Update version in __init__.py
+          sed -i "s/__version__ = .*/__version__ = \"$VERSION\"/" src/pymongo_orm/__init__.py
+
+          # Commit the version change
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add pyproject.toml src/pymongo_orm/__init__.py
+          git commit -m "Bump version to $VERSION"
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin main
+          git push origin "v$VERSION"
+
+      - name: Build and publish
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          poetry build
+          poetry publish

@@ -5,11 +5,11 @@ Example User models for MongoDB ORM.
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from pydantic import EmailStr, Field, validator
+from pydantic import Field, validator
 from pymongo import ASCENDING, DESCENDING
 
-from pymongo_orm.sync_model.model import SyncMongoModel
 from pymongo_orm.async_model.model import AsyncMongoModel
+from pymongo_orm.sync_model.model import SyncMongoModel
 
 
 class UserBase:

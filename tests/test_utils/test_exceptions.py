@@ -2,17 +2,15 @@
 Tests for custom exception classes.
 """
 
-import pytest
-
 from pymongo_orm.exceptions import (
-    MongoORMError,
     ConnectionError,
-    QueryError,
-    ValidationError,
-    IndexError,
     DocumentNotFoundError,
     DuplicateKeyError,
+    IndexError,
+    MongoORMError,
+    QueryError,
     TransactionError,
+    ValidationError,
 )
 
 

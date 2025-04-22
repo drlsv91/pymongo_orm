@@ -2,8 +2,8 @@
 Decorator utilities for MongoDB ORM.
 """
 
-import time
 import logging
+import time
 from functools import wraps
 from typing import Any, Callable, TypeVar, cast
 
@@ -86,7 +86,8 @@ def retry(
                     return func(*args, **kwargs)
                 except exceptions as e:
                     logger.warning(
-                        f"Exception {e}, retrying {func.__name__} in {mdelay} seconds..."
+                        f"Exception {e}, retrying {func.__name__} "
+                        f"in {mdelay} seconds...",
                     )
                     time.sleep(mdelay)
                     mtries -= 1
@@ -128,7 +129,8 @@ def async_retry(
                     return await func(*args, **kwargs)
                 except exceptions as e:
                     logger.warning(
-                        f"Exception {e}, retrying {func.__name__} in {mdelay} seconds..."
+                        f"Exception {e}, retrying {func.__name__} "
+                        f"in {mdelay} seconds...",
                     )
                     await asyncio.sleep(mdelay)
                     mtries -= 1

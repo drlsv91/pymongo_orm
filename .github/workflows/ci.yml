@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "stable"]
+  pull_request:
+    branches: ["main", "stable"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.5.1
+          virtualenvs-create: true
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pipx install poetry
+          poetry install --with dev
+      - name: Lint with Ruff
+        run: |
+          poetry run ruff check .
+      - name: Check formatting with Black
+        run: |
+          poetry run black --check .
+      - name: Sort imports with isort
+        run: |
+          poetry run isort --check .
+      - name: Check types with mypy
+        run: |
+          poetry run mypy --check .
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.5.1
+          virtualenvs-create: true
+      - name: Install dependencies
+        run: |
+          poetry install --with dev
+      - name: Test with pytest
+        run: |
+          poetry run pytest --cov=pymongo_orm --cov-report=xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.5.1
+          virtualenvs-create: true
+      - name: Build package
+        run: |
+          poetry build
+      - name: Check package
+        run: |
+          pip install twine
+          twine check dist/*
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: |
+            dist/

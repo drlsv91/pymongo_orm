@@ -4,14 +4,15 @@ Abstract model base class for MongoDB ORM.
 
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, Generic, List, Optional, Type, TypeVar
+from typing import Any, Callable, Dict, Generic, List, Optional, Type, TypeVar, cast
 
 from pydantic import BaseModel, Field
 
+from ..utils.converters import resolve_collection_name
 from .implementation import (
     AbstractMongoImplementation,
-    QueryType,
     ProjectionType,
+    QueryType,
     SortType,
 )
 
@@ -62,8 +63,10 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             Collection instance
         """
-        collection_name = getattr(cls, "__collection__", cls.__name__.lower() + "s")
-        return db[collection_name]
+
+        collection_name = resolve_collection_name(cls)
+
+        return cast(C, db[collection_name])
 
     @abstractmethod
     def save(self, db: D) -> T:
@@ -76,7 +79,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             Saved model instance
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -97,7 +99,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             Model instance or None if not found
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -124,7 +125,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             List of model instances
         """
-        pass
 
     @abstractmethod
     def delete(self, db: D) -> bool:
@@ -137,7 +137,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             True if deleted, False otherwise
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -152,7 +151,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             Number of documents deleted
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -168,7 +166,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             Number of documents updated
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -183,7 +180,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             Document count
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -194,7 +190,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Args:
             db: Database instance
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -209,7 +204,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             Pipeline results
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -224,7 +218,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             Bulk write result
         """
-        pass
 
     @classmethod
     @abstractmethod
@@ -235,7 +228,6 @@ class AbstractMongoModel(BaseModel, Generic[D, C], ABC):
         Returns:
             MongoDB implementation
         """
-        pass
 
     def _run_hooks(self, hooks: List[Callable]) -> None:
         """

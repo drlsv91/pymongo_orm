@@ -8,13 +8,11 @@ from typing import Any, Dict, Optional
 class MongoORMError(Exception):
     """Base exception for all MongoDB ORM errors."""
 
-    pass
-
 
 class ConnectionError(MongoORMError):
     """Exception raised for connection errors."""
 
-    def __init__(self, uri: str, message: str):
+    def __init__(self, uri: str, message: str) -> None:
         self.uri = uri
         self.message = message
         super().__init__(f"Connection error for '{uri}': {message}")
@@ -23,7 +21,7 @@ class ConnectionError(MongoORMError):
 class QueryError(MongoORMError):
     """Exception raised for query errors."""
 
-    def __init__(self, collection: str, query: Dict[str, Any], message: str):
+    def __init__(self, collection: str, query: Dict[str, Any], message: str) -> None:
         self.collection = collection
         self.query = query
         self.message = message
@@ -33,7 +31,7 @@ class QueryError(MongoORMError):
 class ValidationError(MongoORMError):
     """Exception raised for data validation errors."""
 
-    def __init__(self, model: str, field: str, message: str):
+    def __init__(self, model: str, field: str, message: str) -> None:
         self.model = model
         self.field = field
         self.message = message
@@ -43,7 +41,7 @@ class ValidationError(MongoORMError):
 class IndexError(MongoORMError):
     """Exception raised for index creation errors."""
 
-    def __init__(self, collection: str, index: str, message: str):
+    def __init__(self, collection: str, index: str, message: str) -> None:
         self.collection = collection
         self.index = index
         self.message = message
@@ -53,7 +51,7 @@ class IndexError(MongoORMError):
 class DocumentNotFoundError(MongoORMError):
     """Exception raised when a document is not found."""
 
-    def __init__(self, collection: str, query: Dict[str, Any]):
+    def __init__(self, collection: str, query: Dict[str, Any]) -> None:
         self.collection = collection
         self.query = query
         super().__init__(f"Document not found in '{collection}' for query: {query}")
@@ -62,7 +60,7 @@ class DocumentNotFoundError(MongoORMError):
 class DuplicateKeyError(MongoORMError):
     """Exception raised for duplicate key errors."""
 
-    def __init__(self, collection: str, key: str, value: Any):
+    def __init__(self, collection: str, key: str, value: Any) -> None:
         self.collection = collection
         self.key = key
         self.value = value
@@ -72,7 +70,7 @@ class DuplicateKeyError(MongoORMError):
 class TransactionError(MongoORMError):
     """Exception raised for transaction errors."""
 
-    def __init__(self, message: str, transaction_id: Optional[str] = None):
+    def __init__(self, message: str, transaction_id: Optional[str] = None) -> None:
         self.transaction_id = transaction_id
         self.message = message
         msg = f"Transaction error: {message}"

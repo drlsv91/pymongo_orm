@@ -2,11 +2,11 @@
 Tests for the MongoDB connection classes.
 """
 
-from pymongo import MongoClient
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
 
-from pymongo_orm.sync_model.connection import SyncMongoConnection
 from pymongo_orm.async_model.connection import AsyncMongoConnection
+from pymongo_orm.sync_model.connection import SyncMongoConnection
 
 
 class TestConnections:
@@ -16,7 +16,9 @@ class TestConnections:
         """Test that SyncMongoConnection uses the singleton pattern."""
         # Patch the MongoClient class to return our mock client
         monkeypatch.setattr(
-            MongoClient, "__new__", lambda cls, *args, **kwargs: mock_pymongo_client
+            MongoClient,
+            "__new__",
+            lambda cls, *args, **kwargs: mock_pymongo_client,
         )
 
         # Create two connections with the same URI
@@ -106,7 +108,9 @@ class TestConnections:
 
         # Patch the MongoClient class to return our mock client
         monkeypatch.setattr(
-            MongoClient, "__new__", lambda cls, *args, **kwargs: mock_pymongo_client
+            MongoClient,
+            "__new__",
+            lambda cls, *args, **kwargs: mock_pymongo_client,
         )
 
         # Create a connection

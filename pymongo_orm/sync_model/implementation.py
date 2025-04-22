@@ -3,18 +3,18 @@ Synchronous MongoDB implementation.
 """
 
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from bson import ObjectId
-from pymongo.database import Database
-from pymongo.errors import PyMongoError, DuplicateKeyError
 from pymongo import IndexModel
+from pymongo.database import Database
+from pymongo.errors import DuplicateKeyError, PyMongoError
 
 from ..abstract.implementation import AbstractMongoImplementation
+from ..exceptions import IndexError, MongoORMError, QueryError
+from ..utils.converters import doc_to_model, ensure_object_id, process_query
 from ..utils.decorators import timing_decorator
-from ..utils.converters import ensure_object_id, process_query, doc_to_model
 from ..utils.logging import get_logger
-from ..exceptions import MongoORMError, QueryError, IndexError
 
 # Type variables
 T = TypeVar("T")
@@ -30,7 +30,10 @@ class SyncMongoImplementation(AbstractMongoImplementation):
     @classmethod
     @timing_decorator
     def bulk_write(
-        cls, model_class: Type[T], db: Database, operations: List[Dict[str, Any]]
+        cls,
+        model_class: Type[T],
+        db: Database,
+        operations: List[Dict[str, Any]],
     ) -> Any:
         """
         Execute multiple write operations.
@@ -79,7 +82,8 @@ class SyncMongoImplementation(AbstractMongoImplementation):
             else:
                 # Update existing document
                 result = collection.update_one(
-                    {"_id": ensure_object_id(model.id)}, {"$set": model_data}
+                    {"_id": ensure_object_id(model.id)},
+                    {"$set": model_data},
                 )
                 if result.matched_count == 0:
                     logger.warning(f"No document found with id: {model.id}")
@@ -128,7 +132,9 @@ class SyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during find_one: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
@@ -183,7 +189,9 @@ class SyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during find: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
@@ -245,7 +253,9 @@ class SyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during delete_many: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
@@ -289,13 +299,18 @@ class SyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during update_many: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
     @timing_decorator
     def count(
-        cls, model_class: Type[T], db: Database, query: Optional[QueryType] = None
+        cls,
+        model_class: Type[T],
+        db: Database,
+        query: Optional[QueryType] = None,
     ) -> int:
         """
         Count documents matching the query.
@@ -320,7 +335,9 @@ class SyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during count: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
@@ -356,20 +373,25 @@ class SyncMongoImplementation(AbstractMongoImplementation):
                 index_models.append(IndexModel(processed_fields, **kwargs))
 
             if index_models:
-                result = collection.create_indexes(index_models)
+                collection.create_indexes(index_models)
                 logger.info(
-                    f"Created {len(index_models)} indexes for {model_class.__name__}"
+                    f"Created {len(index_models)} indexes for {model_class.__name__}",
                 )
         except PyMongoError as e:
             logger.error(f"Error creating indexes: {e}")
             raise IndexError(
-                collection=collection.name, index="multiple", message=str(e)
+                collection=collection.name,
+                index="multiple",
+                message=str(e),
             )
 
     @classmethod
     @timing_decorator
     def aggregate(
-        cls, model_class: Type[T], db: Database, pipeline: List[Dict[str, Any]]
+        cls,
+        model_class: Type[T],
+        db: Database,
+        pipeline: List[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
         """
         Run an aggregation pipeline.

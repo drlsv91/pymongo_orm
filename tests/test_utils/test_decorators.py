@@ -2,18 +2,18 @@
 Tests for decorator utilities.
 """
 
-import pytest
-import time
 import asyncio
 import logging
-from unittest.mock import Mock, AsyncMock
+import time
+from unittest.mock import AsyncMock, Mock
 
+import pytest
 
 from pymongo_orm.utils.decorators import (
-    timing_decorator,
+    async_retry,
     async_timing_decorator,
     retry,
-    async_retry,
+    timing_decorator,
 )
 
 
@@ -84,7 +84,7 @@ class TestDecorators:
                 ValueError("First failure"),
                 ValueError("Second failure"),
                 "success",
-            ]
+            ],
         )
 
         # Create a decorated function
@@ -124,7 +124,7 @@ class TestDecorators:
                 ValueError("Retryable error"),
                 TypeError("Non-retryable error"),
                 "success",
-            ]
+            ],
         )
 
         # Create a decorated function that only retries on ValueError
@@ -167,7 +167,7 @@ class TestDecorators:
                 ValueError("First async failure"),
                 ValueError("Second async failure"),
                 "async success",
-            ]
+            ],
         )
 
         # Create a decorated function

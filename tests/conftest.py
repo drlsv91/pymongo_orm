@@ -2,48 +2,16 @@
 Test configuration and fixtures for PyMongo ORM.
 """
 
-import mongomock_motor
-from unittest.mock import AsyncMock, MagicMock
-import pytest
 import mongomock
+import mongomock_motor
+import pytest
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 
-# pymongo_orm
-from pymongo_orm.sync_model.connection import SyncMongoConnection
 from pymongo_orm.async_model.connection import AsyncMongoConnection
 
-
-# Fixtures for mock MongoDB connections
-@pytest.fixture
-def mock_motor_client():
-    """
-    Provide a mock Motor client for testing async operations.
-    """
-    mock_client = MagicMock(spec=AsyncIOMotorClient)
-    mock_db = MagicMock()
-    mock_collection = MagicMock()
-
-    # Setup the structure
-    mock_client.__getitem__.return_value = mock_db
-    mock_db.__getitem__.return_value = mock_collection
-
-    # Mock the async methods
-    mock_collection.insert_one = AsyncMock(
-        return_value=MagicMock(inserted_id="mock_id")
-    )
-    mock_collection.find_one = AsyncMock()
-    mock_collection.find = AsyncMock()
-    mock_collection.update_one = AsyncMock()
-    mock_collection.delete_one = AsyncMock(return_value=MagicMock(deleted_count=1))
-    mock_collection.delete_many = AsyncMock(return_value=MagicMock(deleted_count=1))
-    mock_collection.update_many = AsyncMock(return_value=MagicMock(modified_count=1))
-    mock_collection.count_documents = AsyncMock(return_value=1)
-    mock_collection.create_indexes = AsyncMock()
-    mock_collection.aggregate = AsyncMock()
-    mock_collection.bulk_write = AsyncMock()
-
-    return mock_client
+# pymongo_orm
+from pymongo_orm.sync_model.connection import SyncMongoConnection
 
 
 @pytest.fixture
@@ -70,7 +38,9 @@ def sync_connection(monkeypatch, mock_pymongo_client):
     """
     # Patch the MongoClient class to return our mock client
     monkeypatch.setattr(
-        MongoClient, "__new__", lambda cls, *args, **kwargs: mock_pymongo_client
+        MongoClient,
+        "__new__",
+        lambda cls, *args, **kwargs: mock_pymongo_client,
     )
 
     # Create and return the connection
@@ -88,7 +58,9 @@ def async_connection(monkeypatch, mock_motor_client):
     """
     # Patch the AsyncIOMotorClient class to return our mock client
     monkeypatch.setattr(
-        AsyncIOMotorClient, "__new__", lambda cls, *args, **kwargs: mock_motor_client
+        AsyncIOMotorClient,
+        "__new__",
+        lambda cls, *args, **kwargs: mock_motor_client,
     )
 
     # Create and return the connection

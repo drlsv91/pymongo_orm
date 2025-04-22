@@ -104,7 +104,9 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during find_one: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
@@ -159,7 +161,9 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during find: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
@@ -200,7 +204,10 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
     @classmethod
     @async_timing_decorator
     async def delete_many(
-        cls, model_class: Type[T], db: AsyncIOMotorDatabase, query: QueryType
+        cls,
+        model_class: Type[T],
+        db: AsyncIOMotorDatabase,
+        query: QueryType,
     ) -> int:
         """
         Delete multiple documents matching the query.
@@ -223,7 +230,9 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during delete_many: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
@@ -267,7 +276,9 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during update_many: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
@@ -301,13 +312,17 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
         except PyMongoError as e:
             logger.error(f"MongoDB error during count: {e}")
             raise QueryError(
-                collection=collection.name, query=processed_query, message=str(e)
+                collection=collection.name,
+                query=processed_query,
+                message=str(e),
             )
 
     @classmethod
     @async_timing_decorator
     async def ensure_indexes(
-        cls, model_class: Type[T], db: AsyncIOMotorDatabase
+        cls,
+        model_class: Type[T],
+        db: AsyncIOMotorDatabase,
     ) -> None:
         """
         Create indexes for the model collection.
@@ -339,14 +354,16 @@ class AsyncMongoImplementation(AbstractMongoImplementation):
                 index_models.append(IndexModel(processed_fields, **kwargs))
 
             if index_models:
-                result = await collection.create_indexes(index_models)
+                await collection.create_indexes(index_models)
                 logger.info(
-                    f"Created {len(index_models)} indexes for {model_class.__name__}"
+                    f"Created {len(index_models)} indexes for {model_class.__name__}",
                 )
         except PyMongoError as e:
             logger.error(f"Error creating indexes: {e}")
             raise IndexError(
-                collection=collection.name, index="multiple", message=str(e)
+                collection=collection.name,
+                index="multiple",
+                message=str(e),
             )
 
     @classmethod

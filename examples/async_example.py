@@ -4,25 +4,25 @@ Asynchronous MongoDB ORM example.
 
 import asyncio
 import logging
-from datetime import datetime
 
-from pymongo_orm import AsyncMongoConnection
-from pymongo_orm import setup_logging
-from .models.user import AsyncUser
+from examples.models.user import AsyncUser
+from pymongo_orm import AsyncMongoConnection, setup_logging
 
 
-async def run_example():
+async def run_example() -> None:
     """Run the asynchronous example."""
     logger = logging.getLogger("async_example")
     print("Starting async MongoDB example")
 
     # Create a connection
     connection = AsyncMongoConnection(
-        "mongodb://localhost:27017", maxPoolSize=10, appname="AsyncExample"
+        "mongodb://localhost:27017",
+        maxPoolSize=10,
+        appname="AsyncExample",
     )
 
     # Get the database
-    db = connection.get_db(db_name="mongodb_orm_async_examples")
+    db = connection.get_db(db_name="async_examples")
 
     try:
         # Ensure indexes are created
@@ -50,7 +50,7 @@ async def run_example():
         found_user = await AsyncUser.find_by_email(db, "john.doe@example.com")
         if found_user:
             print(
-                f"Found user: {found_user.name}, {found_user.email}, {found_user.age}"
+                f"Found user: {found_user.name}, {found_user.email}, {found_user.age}",
             )
 
         # Find users with filtering, projection, and sorting
@@ -117,7 +117,9 @@ async def run_example():
 
         # Perform batch update
         updated = await AsyncUser.update_many(
-            db, {"roles": "user"}, {"$set": {"is_active": True}}
+            db,
+            {"roles": "user"},
+            {"$set": {"is_active": True}},
         )
         print(f"Updated {updated} users")
 

@@ -2,18 +2,17 @@
 Tests for utility converter functions.
 """
 
-import pytest
 from datetime import datetime
+
 from bson import ObjectId
-from unittest.mock import Mock, AsyncMock, patch
 
 from pymongo_orm.utils.converters import (
-    ensure_object_id,
-    process_query,
     doc_to_model,
-    model_to_doc,
     docs_to_models,
+    ensure_object_id,
     format_timestamp,
+    model_to_doc,
+    process_query,
 )
 
 

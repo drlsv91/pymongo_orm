@@ -63,7 +63,8 @@ class TestAsyncModel:
 
         # Test find with projection
         users_with_projection = await TestUser.find(
-            async_db, projection={"name": 1, "email": 1, "age": 1}
+            async_db,
+            projection={"name": 1, "email": 1, "age": 1},
         )
         assert len(users_with_projection) == len(test_data["users"])
         assert hasattr(users_with_projection[0], "name")
@@ -150,7 +151,9 @@ class TestAsyncModel:
 
         # Update users under 30
         updated = await TestUser.update_many(
-            async_db, {"age": {"$lt": 30}}, {"$set": {"name": "Updated Name"}}
+            async_db,
+            {"age": {"$lt": 30}},
+            {"$set": {"name": "Updated Name"}},
         )
         assert updated == 1
 
@@ -186,7 +189,7 @@ class TestAsyncModel:
         assert len(result) == 1
         assert "avgAge" in result[0]
         assert result[0]["avgAge"] == sum(u["age"] for u in test_data["users"]) / len(
-            test_data["users"]
+            test_data["users"],
         )
 
     @pytest.mark.asyncio

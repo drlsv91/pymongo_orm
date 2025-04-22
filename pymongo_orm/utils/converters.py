@@ -2,14 +2,34 @@
 Type conversion utilities for MongoDB ORM.
 """
 
-from typing import Any, Dict, List, Optional, Union, TypeVar, Type
 from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Type, TypeVar, Union
+
 from bson import ObjectId
 
 # Type aliases
 Document = Dict[str, Any]
 Query = Dict[str, Any]
 T = TypeVar("T")
+
+
+def resolve_collection_name(cls: Type[T]) -> str:
+    """Determine the appropriate collection name for this model class."""
+    # Check for explicit collection name override
+    if hasattr(cls, "__collection__"):
+        collection_name = getattr(cls, "__collection__")
+        if not isinstance(collection_name, str) or not collection_name.strip():
+            raise ValueError(
+                f"__collection__ must be a non-empty string. Got: {collection_name}"
+            )
+        return collection_name
+
+    # Default to lowercase pluralized class name
+    class_name = cls.__name__.lower()
+    if not class_name.endswith("s"):
+        class_name += "s"
+
+    return class_name
 
 
 def ensure_object_id(id_value: Union[str, ObjectId, None]) -> Optional[ObjectId]:
@@ -83,7 +103,7 @@ def model_to_doc(model: Any, exclude_id: bool = False) -> Document:
         MongoDB document
     """
     exclude = {"id"} if exclude_id else set()
-    doc = model.model_dump(exclude=exclude)
+    doc: Document = model.model_dump(exclude=exclude)
 
     # Convert id to _id if present and not excluded
     if not exclude_id and "id" in doc and doc["id"] is not None:

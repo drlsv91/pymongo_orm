@@ -2,9 +2,7 @@
 Tests for bulk operations in synchronous MongoDB model.
 """
 
-import pytest
-from pymongo import InsertOne, UpdateOne, DeleteOne, ASCENDING
-from bson import ObjectId
+from pymongo import ASCENDING, DeleteOne, InsertOne, UpdateOne
 
 from pymongo_orm.sync_model.model import SyncMongoModel
 

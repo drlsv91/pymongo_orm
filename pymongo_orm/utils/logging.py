@@ -6,11 +6,12 @@ import logging
 import sys
 from typing import Optional
 
-from ..config import LOG_FORMAT, DEFAULT_LOG_LEVEL
+from ..config import DEFAULT_LOG_LEVEL, LOG_FORMAT
 
 
 def setup_logging(
-    level: Optional[str] = None, log_file: Optional[str] = None
+    level: Optional[str] = None,
+    log_file: Optional[str] = None,
 ) -> logging.Logger:
     """
     Configure logging for the MongoDB ORM.

@@ -2,9 +2,9 @@
 Abstract connection class for MongoDB.
 """
 
-from abc import ABC, abstractmethod
 import threading
-from typing import Any, Dict, ClassVar
+from abc import ABC, abstractmethod
+from typing import Any, ClassVar, Dict
 
 
 class AbstractMongoConnection(ABC):
@@ -30,7 +30,6 @@ class AbstractMongoConnection(ABC):
         Returns:
             Connection instance
         """
-        pass
 
     @abstractmethod
     def get_db(self, *, db_name: str) -> Any:
@@ -43,7 +42,6 @@ class AbstractMongoConnection(ABC):
         Returns:
             Database instance
         """
-        pass
 
     @abstractmethod
     def get_client(self) -> Any:
@@ -53,11 +51,9 @@ class AbstractMongoConnection(ABC):
         Returns:
             MongoDB client instance
         """
-        pass
 
     @abstractmethod
     def close(self) -> None:
         """
         Close the MongoDB connection and clean up resources.
         """
-        pass
