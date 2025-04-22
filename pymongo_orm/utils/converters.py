@@ -17,10 +17,10 @@ def resolve_collection_name(cls: Type[T]) -> str:
     """Determine the appropriate collection name for this model class."""
     # Check for explicit collection name override
     if hasattr(cls, "__collection__"):
-        collection_name = getattr(cls, "__collection__")
+        collection_name = cls.__collection__
         if not isinstance(collection_name, str) or not collection_name.strip():
             raise ValueError(
-                f"__collection__ must be a non-empty string. Got: {collection_name}"
+                f"__collection__ must be a non-empty string. Got: {collection_name}",
             )
         return collection_name
 
