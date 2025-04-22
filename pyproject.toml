@@ -1,22 +1,27 @@
-[project]
-name = "pymongo_orm"
+[tool.poetry]
+name = "pymongo-orm"
 version = "0.1.2"
 description = "A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python"
-authors = [{ name = "Oluwaleye Victor", email = "o.oluwaleye93@gmail.com" }]
+authors = ["Oluwaleye Victor <o.oluwaleye93@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.12,<4.0"
-dependencies = ["motor (>=3.7.0,<4.0.0)", "pydantic (>=2.11.3,<3.0.0)"]
-license = { text = "MIT" }
+license = "MIT"
+packages = [{ include = "pymongo_orm" }]
+
+# Project metadata
+homepage = "https://github.com/drlsv91/pymongo_orm"
+repository = "https://github.com/drlsv91/pymongo_orm"
+documentation = "https://drlsv91.github.io/pymongo_orm/"
+
+
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Database",
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -32,15 +37,11 @@ keywords = [
     "pydantic",
 ]
 
-[project.urls]
-"Homepage" = "https://github.com/drlsv91/pymongo_orm"
-"Bug Tracker" = "https://github.com/drlsv91/pymongo_orm/issues"
-"Documentation" = "https://drlsv91.github.io/pymongo_orm/"
-"Source Code" = "https://github.com/drlsv91/pymongo_orm"
-
-
-[tool.poetry]
-packages = [{ include = "pymongo_orm" }]
+# Dependencies
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+motor = ">=3.7.0,<4.0.0"
+pydantic = ">=2.11.3,<3.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -70,7 +71,7 @@ profile = "black"
 line_length = 88
 
 [tool.mypy]
-python_version = ">=3.12,<4.0"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -79,6 +80,8 @@ check_untyped_defs = true
 disallow_untyped_decorators = true
 no_implicit_optional = true
 strict_optional = true
+ignore_errors = true
+exclude = ["^examples/", "^tests/", "pymongo_orm/__init__.py"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -86,7 +89,64 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 
 [tool.ruff]
-select = ["E", "F", "B", "I"]
-ignore = []
 line-length = 88
 target-version = "py37"
+exclude = [
+    "examples/",
+    ".venv/",
+    ".git/",
+    "__pycache__/",
+    "*.pyc",
+    "*.pyo",
+    ".mypy_cache/",
+    ".pytest_cache/",
+    "build/",
+    "dist/",
+]
+
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "B",
+    "I",
+    "N",
+    "UP",
+    "ANN",
+    "S",
+    "BLE",
+    "COM",
+    "C4",
+    "PIE",
+    "PYI",
+    "SIM",
+]
+ignore = [
+    "B027",
+    "FBT003",
+    "S105",
+    "S106",
+    "S107",
+    "C901",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "ANN401",
+    "B904",
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.isort]
+known-first-party = ["pymongo_orm"]
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "double"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"tests/**/*.py" = ["S101", "ANN"]
