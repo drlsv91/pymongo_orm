@@ -127,15 +127,25 @@ class User(AsyncMongoModel):
 await User.ensure_indexes(db)
 ```
 
-### Transactions
+### Indexes
 
 ```python
-client = conn.get_client()
-async with await client.start_session() as session:
-    async with session.start_transaction():
-        # Perform multiple operations atomically
-        await user.save(db)
-        await order.save(db)
+from pymongo import ASCENDING, DESCENDING
+
+class User(AsyncMongoModel):
+    __collection__ = "users"
+    __indexes__ = [
+        {"fields": [("email", ASCENDING)], "unique": True, "background": True},
+        {"fields": [("name", ASCENDING), ("age", DESCENDING)], "sparse": True},
+        {"fields": [("created_at", DESCENDING)], "expireAfterSeconds": 86400}
+    ]
+
+    name: str
+    email: str
+    age: int
+
+# Create indexes
+await User.ensure_indexes(db)
 ```
 
 ### Aggregation
