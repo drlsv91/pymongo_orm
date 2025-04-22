@@ -1,8 +1,8 @@
-# Pymongo ORM
+# pymongo-orm
 
-A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python with support for both synchronous and asynchronous operations.
+A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python, designed for asynchronous operations with Pydantic integration.
 
-## Features
+## 🌟 Features
 
 - **Dual API**: Both synchronous (PyMongo) and asynchronous (Motor) interfaces
 - **Type Safety**: Comprehensive type annotations for better IDE support
@@ -21,10 +21,18 @@ A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python wi
 - **Error Handling**: Comprehensive error handling and custom exceptions
 - **Logging**: Built-in logging for debugging and monitoring
 
-## Installation
+## 📦 Installation
+
+Install using pip:
 
 ```bash
-pip install pymongo_orm
+pip install pymongo-orm
+```
+
+Or with Poetry:
+
+```bash
+poetry add pymongo-orm
 ```
 
 ## Quick Start
@@ -167,9 +175,9 @@ pymongo_orm/
 └── ...
 ```
 
-## Requirements
+## 📋 Requirements
 
-- Python 3.7+
+- Python 3.9+
 - pymongo
 - motor
 - pydantic
@@ -184,8 +192,7 @@ git clone https://github.com/drlsv91/pymongo_orm.git
 cd pymongo_orm
 
 # Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+poetry env activate # On Windows: venv\Scripts\activate
 
 # Install the package in development mode with dev dependencies
 pip install -e ".[dev]"
@@ -194,6 +201,6 @@ pip install -e ".[dev]"
 pytest
 ```
 
-## License
+## 📄 License
 
-MIT
+Distributed under the MIT License. See `LICENSE` for more information.
