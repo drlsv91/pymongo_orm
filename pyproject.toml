@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pymongo-orm"
-version = "0.1.2"
+version = "0.1.3"
 description = "A lightweight, flexible Object-Relational Mapping (ORM) for MongoDB in Python"
 authors = ["Oluwaleye Victor <o.oluwaleye93@gmail.com>"]
 readme = "README.md"
